@@ -73,9 +73,9 @@
 
 <script>
 import tableData from "@/data/TableData"; 
-import ItemButton from "@/views/ItemButton.vue";
-import ItemInput from "@/views/ItemInput.vue";
-import ItemModal from "@/views/ItemModal.vue";
+import ItemButton from "@/components/ui/ItemButton.vue";
+import ItemInput from "@/components/ui/ItemInput.vue";
+import ItemModal from "@/components/ui/ItemModal.vue";
 
 export default {
     components: { ItemButton, ItemInput, ItemModal },

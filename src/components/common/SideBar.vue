@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="logo">
-            <img src="../assets/logo.jpg" alt="Dashport logo">
+            <img src="../../assets/logo.jpg" alt="Dashport logo">
         </div>
         <div>
             <SideBarElements />

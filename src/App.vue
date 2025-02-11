@@ -1,23 +1,20 @@
 <template>
-  <div>
-    <DefaultLayout/>
-  </div>
-  <div>
-    <!-- <AuthLayout/> -->
-  </div>
+  <component :is="layout">
+    <RouterView />
+  </component>
 </template>
-<script>
 
-import AuthLayout from './layout/AuthLayout.vue';
-import DefaultLayout from './layout/DefaultLayout.vue';
+<script setup>
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+import DefaultLayout from '@/layout/DefaultLayout.vue';
+import AuthLayout from '@/layout/AuthLayout.vue';
 
-export default {
-  components: {
-    DefaultLayout,
-    AuthLayout
-  }
-}
+const route = useRoute();
+
+const layout = computed(() => {
+  return route.meta.layout === 'auth' ? AuthLayout : DefaultLayout;
+});
 </script>
 <style>
-
 </style>
