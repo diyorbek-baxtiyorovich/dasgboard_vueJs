@@ -1,6 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import RegionsView from '../pages/RegionView.vue'
-import DashportView from '../pages/DashportView.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -13,12 +11,22 @@ const router = createRouter({
         {
             path: '/regions',
             name: 'regions',
-            component: RegionsView,
+            component: () => import('@/pages/RegionView.vue')
         },
         {
             path: '/dashboard',
             name: 'dashboard',
-            component: DashportView,
+            component: () => import('@/pages/DashportView.vue')
+        },
+        {
+            path: '/login',
+            name: 'login',
+            component: () => import('@/pages/Auth/Login.vue')
+        },
+        {
+            path: '/Register',
+            name: 'Register',
+            component: () => import('@/pages/Auth/Register.vue')
         },
     ]
 })

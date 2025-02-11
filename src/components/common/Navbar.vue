@@ -5,8 +5,7 @@
         </div>
         <div class="nav-bar_profile">
             <ul class="d-flex">
-                <li class="me-3">Login</li>
-                <li class="me-3">Sign up</li>
+                Log out
             </ul>
         </div>
     </div>

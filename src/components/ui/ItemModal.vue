@@ -80,6 +80,7 @@ export default {
                         ...this.formData
                     };
                     this.$emit("add-user", newUser);
+                    this.formData = { name: '', number: '', region: '' };
                 }
                 this.closeModal();
             }

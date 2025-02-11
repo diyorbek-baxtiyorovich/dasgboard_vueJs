@@ -16,8 +16,8 @@
 <script>
 
 import Home from '@/components/Home.vue';
-import Navbar from '@/components/Navbar.vue';
-import SideBar from '@/components/SideBar.vue';
+import Navbar from '@/components/common/Navbar.vue';
+import SideBar from '@/components/common/SideBar.vue';
 
 export default {
   components: {
