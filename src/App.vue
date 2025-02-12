@@ -1,5 +1,5 @@
 <template>
-  <component :is="layout">
+  <component :is="currentLayout">
     <RouterView />
   </component>
 </template>
@@ -12,7 +12,7 @@ import AuthLayout from '@/layout/AuthLayout.vue';
 
 const route = useRoute();
 
-const layout = computed(() => {
+const currentLayout = computed(() => {
   return route.meta.layout === 'auth' ? AuthLayout : DefaultLayout;
 });
 </script>

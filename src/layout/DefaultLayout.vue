@@ -7,21 +7,19 @@
       <div>
         <Navbar/>
       </div>
-      <div>
-        <Home/>
-      </div>
+      <main class="main-block">
+        <RouterView />
+      </main>
     </div>
   </div>
 </template>
 <script>
 
-import Home from '@/components/Home.vue';
-import Navbar from '@/components/common/Navbar.vue';
+import Navbar from '@/layout/components/Navbar.vue';
 import SideBar from '@/components/common/SideBar.vue';
 
 export default {
   components: {
-    Home,
     Navbar,
     SideBar
   }
@@ -38,5 +36,9 @@ export default {
     height: 100vh;
     background-color: #fff;
   }
+    .main-block{
+        width: 100%;
+        height: calc(100vh - 70px);
+    }
 
 </style>

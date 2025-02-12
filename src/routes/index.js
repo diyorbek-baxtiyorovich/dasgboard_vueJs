@@ -22,9 +22,15 @@ const router = createRouter({
       meta: { requiresAuth: true }
     },
     {
+      path: '/users',
+      name: 'users',
+      component: () => import('@/pages/UserInfoView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
       path: '/regions',
       name: 'regions',
-      component: () => import('@/pages/RegionView.vue'),
+      component: () => import('@/pages/RegionsView.vue'),
       meta: { requiresAuth: true }
     }
   ]

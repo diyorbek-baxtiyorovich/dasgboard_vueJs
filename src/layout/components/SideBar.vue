@@ -1,12 +1,12 @@
 <template>
     <div class="sideBar_blok">
         <nav class="sidebar">
-            <ul>
-                <li v-for="(item, index) in menuItems" :key="index">        
-                    <RouterLink :to="item.route" class="text-decoration-none text-white">
-                        <i :class="`fa fa-${item.icon}`"></i> {{ item.title }}
-                    </RouterLink>
-                </li>
+            <ul v-for="(item, index) in menuItems" :key="index" >
+                <RouterLink :to="item.route" class="text-decoration-none text-white">
+                    <li class="border-bottom">        
+                            <i :class="`fa fa-${item.icon}`"></i> {{ item.title }}
+                    </li>
+                </RouterLink>
             </ul>
         </nav>
     </div>
@@ -34,10 +34,10 @@ import menuItems from "@/data/sideBarData";
     .sidebar ul {
         list-style: none;
         padding: 0;
-        padding-top: 15px;
+        padding-top: 10px;
     }
     .sidebar li {
-        padding: 10px;
+        padding: 5px 10px;
         color: white;
         cursor: pointer;    
     }

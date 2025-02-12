@@ -1,8 +1,8 @@
 const menuItems = [
     { title: "Menus", icon: "bars", route: "/" },
-    { title: "Dashboard", icon: "line-chart", route: "/dashboard" },
+    { title: "Branch", icon: "line-chart", route: "/dashboard" },
+    { title: "User", icon: "pencil", route: "/users" },
     { title: "Region", icon: "globe", route: "/regions" },
-    // { title: "Files", icon: "file", route: "/files" },
     // { title: "Widgets", icon: "cogs", route: "/widgets" },
     
     // { title: "Blog", icon: "pencil", route: "/blog", separator: true },  
