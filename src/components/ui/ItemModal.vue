@@ -1,37 +1,29 @@
 <template>
     <div v-if="isOpen" class="modal-mein">
         <div class="modal-item">
-            <h1> {{ isEditing ? 'User Changes' : 'Add a Customer' }}</h1>
+            <h1>{{ isEditing ? 'User Changes' : 'Add a Customer' }}</h1>
             <form @submit.prevent="submitForm">
                 <div class="mb-3">
-                    <label for="InputName" class="form-label">Name</label>
-                    <input v-model="formData.name" type="text" class="form-control" id="InputName" required>
-                    <div class="form-text">Just enter your username.</div>
+                    <label>Name</label>
+                    <input v-model="formData.name" type="text" class="form-control" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="InputNumber" class="form-label">Number</label>
-                    <input v-model="formData.number" type="text" class="form-control" id="InputNumber" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required>
-                    <div class="form-text">Just enter your phone number.</div>
-                    <small>Format: 123-456-7890</small>
+                    <label>Number</label>
+                    <input v-model="formData.number" type="text" class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required>
                 </div>
 
                 <div class="mb-3">
-                    <label for="regionSelect">Region</label>
+                    <label>Region</label>
                     <select v-model="formData.region" class="form-select">
                         <option disabled value="">Select a region</option>
-                        <option v-for="(region, index) in regions" :key="index" :value="region"> 
-                            {{ region }}
-                        </option>
+                        <option v-for="region in regions" :key="region">{{ region }}</option>
                     </select>
                 </div>
 
                 <div class="modal-buttons">
-                    <button type="submit" class="btn btn-primary">
-                        {{ isEditing ? 'Save Changes' : 'Add User' }}
-                    </button>
+                    <button type="submit" class="btn btn-primary">{{ isEditing ? 'Save Changes' : 'Add User' }}</button>
                     <button type="button" class="btn btn-danger" @click="closeModal">Cancel</button>
-
                 </div>
             </form>
         </div>
@@ -40,19 +32,10 @@
 
 <script>
 export default {
-    props: {
-        isOpen: Boolean,
-        user: Object,
-        isEditing: Boolean
-    },
+    props: { isOpen: Boolean, user: Object, isEditing: Boolean },
     data() {
         return {
-            customer: {
-                name: "",
-                number: "",
-                region: "",
-            },
-            formData: this.user ? { ...this.user } : { name: '', number: '', region: '' },
+            formData: { name: "", number: "", region: "" },
             regions: [
                 "Toshkent", "Andijon", "Samarqand", "Qashqadaryo", "Surxondaryo",
                 "Buxoro", "Navoiy", "Qoraqalpoqiston", "Sirdaryo", "Jizzax",
@@ -62,30 +45,16 @@ export default {
     },
     watch: {
         user(newUser) {
-            this.formData = newUser ? { ...newUser } : { name: '', number: '', region: '' };
+            this.formData = newUser ? { ...newUser } : { name: "", number: "", region: "" };
         }
     },
-
     methods: {
-        closeModal() {
-            this.$emit("close");
-        },
+        closeModal() { this.$emit("close"); },
         submitForm() {
-                if (this.formData.name && this.formData.number && this.formData.region) {
-                if (this.isEditing) {
-                    this.$emit("save-user", this.formData);
-                } else {
-                    const newUser = {
-                        id: Date.now(),
-                        ...this.formData
-                    };
-                    this.$emit("add-user", newUser);
-                    this.formData = { name: '', number: '', region: '' };
-                }
-                this.closeModal();
-            }
+            this.$emit(this.isEditing ? "save-user" : "add-user", this.formData);
+            this.closeModal();
         }
-    },  
+    }
 };
 </script>
 

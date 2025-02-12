@@ -18,7 +18,7 @@ const router = createRouter({
     {
       path: '/dashboard',
       name: 'dashboard',
-      component: () => import('@/pages/DashportView.vue'),
+      component: () => import('@/pages/BranchView.vue'),
       meta: { requiresAuth: true }
     },
     {
@@ -48,3 +48,5 @@ router.beforeEach((to, from, next) => {
 });
 
 export default router;
+
+

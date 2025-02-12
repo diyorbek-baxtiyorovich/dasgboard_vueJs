@@ -2,21 +2,18 @@
     <div class="mein-block">
         <h3>User Info</h3>
         <div class="d-flex justify-content-between align-items-center py-1">
-            <div class="item-button">
-                <ItemButton @click="openModal" />
-            </div>
-            <div class="item-search">
-                <ItemInput v-model="searchQuery" @search="applySearch" />
-            </div>
+            <ItemButton @click="openModal" />
+            <ItemInput v-model="searchQuery" @search="applySearch" />
         </div>
+
         <table class="table table-striped w-100">
             <thead>
                 <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Number</th>
-                    <th scope="col">Region</th>
-                    <th scope="col" class="text-center">Action</th>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Number</th>
+                    <th>Region</th>
+                    <th class="text-center">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -24,12 +21,12 @@
                     <td colspan="5" class="text-center">Hech qanday ma'lumot topilmadi</td>
                 </tr>
                 <tr v-for="(user, index) in paginatedUsers" :key="user.id">
-                    <th scope="row">{{ (currentPage - 1) * itemsPerPage + index + 1 }}</th>
+                    <th>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</th>
                     <td>{{ user.name }}</td>
                     <td>{{ user.number }}</td>
                     <td>{{ user.region }}</td>
                     <td class="text-center">
-                        <button class="icon-btn edit-btn"  @click="editUser(user)">
+                        <button class="icon-btn edit-btn" @click="editUser(user)">
                             <i class="fa fa-edit"></i>
                         </button>
                         <button class="icon-btn delete-btn" @click="deleteUser(user.id)">
@@ -45,12 +42,8 @@
                 <li class="page-item" :class="{ disabled: currentPage === 1 }">
                     <button class="page-link" @click="prevPage">Previous</button>
                 </li>
-                <li 
-                    class="page-item" 
-                    v-for="page in totalPages" 
-                    :key="page" 
-                    :class="{ active: currentPage === page }"
-                >
+                <li v-for="page in totalPages" :key="page" 
+                    class="page-item" :class="{ active: currentPage === page }">
                     <button class="page-link" @click="setPage(page)">{{ page }}</button>
                 </li>
                 <li class="page-item" :class="{ disabled: currentPage === totalPages }">
@@ -67,7 +60,6 @@
             @save-user="saveUser"
             @add-user="addUser"
         />
-
     </div>
 </template>
 
@@ -84,9 +76,10 @@ export default {
             users: [...tableData], 
             searchQuery: "",
             currentPage: 1,
-            itemsPerPage: 10,
+            itemsPerPage: 8,
             isModalOpen: false,
             selectedUser: null,
+            isEditing: false
         };
     },
     computed: {
@@ -99,76 +92,43 @@ export default {
         totalPages() {
             return Math.ceil(this.filteredUsers.length / this.itemsPerPage);
         },
-
         paginatedUsers() {
-            if (this.filteredUsers.length === 0) return [];
             const start = (this.currentPage - 1) * this.itemsPerPage;
             return this.filteredUsers.slice(start, start + this.itemsPerPage);
         }
     },
-    watch: {
-        searchQuery() {
-            this.currentPage = 1; 
-        }
-    },
     methods: {
-        setPage(page) {
-            this.currentPage = page;
-        },
-        prevPage() {
-            if (this.currentPage > 1) {
-                this.currentPage--;
-            }
-        },
-        nextPage() {
-            if (this.currentPage < this.totalPages) {
-                this.currentPage++;
-            }
-        },
+        setPage(page) { this.currentPage = page; },
+        prevPage() { if (this.currentPage > 1) this.currentPage--; },
+        nextPage() { if (this.currentPage < this.totalPages) this.currentPage++; },
         deleteUser(id) {
-            this.users = this.users.filter(user => user.id !== id);
+            if (confirm("Bu foydalanuvchini o'chirishni xohlaysizmi?")) {
+                this.users = this.users.filter(user => user.id !== id);
+            }
         },
-        openModal() {
-            this.isModalOpen = true;
-        },
-        
-        closeModal() {
-            this.isModalOpen = false;
-        },
+        openModal() { this.isModalOpen = true; this.isEditing = false; this.selectedUser = null; },
+
+        closeModal() { this.isModalOpen = false; this.isEditing = false; this.selectedUser = null; },
 
         addUser(newUser) {
-            this.users.push(newUser);
+            this.users.push({ id: Date.now(), ...newUser });
+            this.closeModal();
         },
-        applySearch(query) {
-            this.searchQuery = query;
-            this.currentPage = 1;
-        },
-
         editUser(user) {
-            this.selectedUser = { ...user }; 
+            this.selectedUser = { ...user };
             this.isEditing = true;
             this.isModalOpen = true;
         },
         saveUser(updatedUser) {
             const index = this.users.findIndex(u => u.id === updatedUser.id);
-            if (index !== -1) {
-                this.users.splice(index, 1, updatedUser);
-            }
+            if (index !== -1) this.users.splice(index, 1, updatedUser);
             this.closeModal();
-        },
-
-        closeModal() {
-            this.isModalOpen = false;
-            this.isEditing = false;
-            this.selectedUser = null;
-        },
-        
+        }
     }
 };
 </script>
 
 <style>
-
 .mein-block {
     width: 100%;
     height: 100%;
@@ -193,6 +153,5 @@ export default {
 .pagination .page-link {
     cursor: pointer;
 }
-
 
 </style>
