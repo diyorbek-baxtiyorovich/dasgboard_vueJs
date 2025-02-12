@@ -99,6 +99,7 @@ export default {
         totalPages() {
             return Math.ceil(this.filteredUsers.length / this.itemsPerPage);
         },
+
         paginatedUsers() {
             if (this.filteredUsers.length === 0) return [];
             const start = (this.currentPage - 1) * this.itemsPerPage;
@@ -130,6 +131,7 @@ export default {
         openModal() {
             this.isModalOpen = true;
         },
+        
         closeModal() {
             this.isModalOpen = false;
         },
