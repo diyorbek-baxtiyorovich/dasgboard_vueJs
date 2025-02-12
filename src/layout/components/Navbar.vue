@@ -30,7 +30,7 @@ const logout = () => {
 .nav-block {
     width: 100%;
     height: 70px;
-    background-color: yellowgreen;
+    background-color: #478F96;
     color: #fff;
     padding: 0 20px;
 }

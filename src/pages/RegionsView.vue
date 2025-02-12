@@ -6,16 +6,18 @@
             <main class="container">
                 <div class="row g-3">
                     <div class="col-sm-7">
-                        <input v-model="newRegion.city" type="text" class="form-control" placeholder="City" aria-label="City">
+                        <select v-model="newRegion.city" class="form-control" aria-label="City">
+                            <option value="" disabled selected>Viloyat tanlang</option>
+                            <option v-for="region in regionsList" :key="region" :value="region">
+                                {{ region }}
+                            </option>
+                        </select>
                     </div>
+
                     <div class="col-sm">
-                        <input v-model="newRegion.state" type="text" class="form-control" placeholder="District" aria-label="State">
-                    </div>
-                    <div class="col-sm">
-                        <input v-model="newRegion.zip" type="text" class="form-control" placeholder="Zip" aria-label="Zip">
-                    </div>
-                    <div class="col-sm">
-                        <button @click="addRegion" type="submit" class="btn btn-primary">Submit</button>
+                        <button @click="addRegion" type="submit" class="btn btn-primary">
+                            {{ isEditing ? "Update" : "Submit" }}
+                        </button>
                     </div>
                 </div>
             </main>
@@ -25,20 +27,16 @@
                     <tr>
                         <th>#</th>
                         <th>City</th>
-                        <th>District</th>
-                        <th>Zip</th>
                         <th class="text-center">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-if="paginatedRegions.length === 0">
-                        <td colspan="5" class="text-center">No data found</td>
+                        <td colspan="3" class="text-center">No data found</td>
                     </tr>
                     <tr v-for="(region, index) in paginatedRegions" :key="region.id">
                         <th>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</th>
                         <td>{{ region.city }}</td>
-                        <td>{{ region.state }}</td>
-                        <td>{{ region.zip }}</td>
                         <td class="text-center">
                             <button class="icon-btn edit-btn" @click="editRegion(region)">
                                 <i class="fa fa-edit"></i>
@@ -50,7 +48,7 @@
                     </tr>
                 </tbody>
             </table>
-            
+
             <nav v-if="totalPages > 1">
                 <ul class="pagination justify-content-end">
                     <li class="page-item" :class="{ disabled: currentPage === 1 }">
@@ -69,21 +67,25 @@
     </div>
 </template>
 
+
 <script>
 export default {
     data() {
         return {
             regions: [
-                { id: 1, city: "Tashkent", state: "Tashkent V", zip: "100000" },
-                { id: 2, city: "Andijon", state: "Andijon", zip: "100000" },
-                { id: 3, city: "Samarqand", state: "Samarqand", zip: "100000" },
-                { id: 4, city: "Qashqadaryo", state: "Qashqadaryo", zip: "100000" },
-                { id: 5, city: "Surxondaryo", state: "Surxondaryo", zip: "100000" },
-                { id: 6, city: "Buxoro", state: "Buxoro", zip: "100000" },
+                { id: 1, city: "Toshkent" },
+                { id: 2, city: "Andijon" },
             ],
-            newRegion: { city: "", state: "", zip: "" },
+            regionsList: [
+                "Toshkent", "Andijon", "Namangan", "Farg‘ona",
+                "Samarqand", "Buxoro", "Xorazm", "Qashqadaryo",
+                "Surxondaryo", "Jizzax", "Sirdaryo", "Navoiy"
+            ],
+            newRegion: { city: "" },
             currentPage: 1,
-            itemsPerPage: 7,
+            itemsPerPage: 5,
+            isEditing: false,
+            editingId: null,
         };
     },
     computed: {
@@ -97,16 +99,32 @@ export default {
     },
     methods: {
         addRegion() {
-            if (this.newRegion.city && this.newRegion.state && this.newRegion.zip) {
-                this.regions.push({ id: Date.now(), ...this.newRegion });
-                this.newRegion = { city: "", state: "", zip: "" };
+            if (this.newRegion.city) {
+                if (this.isEditing) {
+                    const index = this.regions.findIndex(region => region.id === this.editingId);
+                    if (index !== -1) {
+                        this.regions[index] = { id: this.editingId, ...this.newRegion };
+                    }
+                    this.isEditing = false;
+                    this.editingId = null;
+                } else {
+                    this.regions.push({ id: Date.now(), ...this.newRegion });
+                }
+                this.newRegion = { city: "" };
             }
-        },
-        deleteRegion(id) {
-            this.regions = this.regions.filter(region => region.id !== id);
         },
         editRegion(region) {
             this.newRegion = { ...region };
+            this.isEditing = true;
+            this.editingId = region.id;
+        },
+        deleteRegion(id) {
+            this.regions = this.regions.filter(region => region.id !== id);
+            if (this.editingId === id) {
+                this.newRegion = { city: "" };
+                this.isEditing = false;
+                this.editingId = null;
+            }
         },
         setPage(page) {
             this.currentPage = page;
@@ -120,40 +138,13 @@ export default {
             if (this.currentPage < this.totalPages) {
                 this.currentPage++;
             }
-        },
-        addRegion() {
-            if (this.newRegion.city && this.newRegion.state && this.newRegion.zip) {
-                if (this.isEditing) {
-                    const index = this.regions.findIndex(region => region.id === this.editingId);
-                    if (index !== -1) {
-                        this.regions[index] = { id: this.editingId, ...this.newRegion };
-                    }
-                    this.isEditing = false;
-                    this.editingId = null;
-                } else {
-                    this.regions.push({ id: Date.now(), ...this.newRegion });
-                }
-                this.newRegion = { city: "", state: "", zip: "" };
-            }
-        },
-        editRegion(region) {
-            this.newRegion = { ...region };
-            this.isEditing = true;
-            this.editingId = region.id;
-        },
-        deleteRegion(id) {
-            this.regions = this.regions.filter(region => region.id !== id);
-            if (this.editingId === id) {
-                this.newRegion = { city: "", state: "", zip: "" };
-                this.isEditing = false;
-                this.editingId = null;
-            }
-        },
+        }
     }
 };
 </script>
 
-<style>
+
+<style scoped>
 .reg-block {
     width: 100%;
     height: calc(100vh - 70px);
