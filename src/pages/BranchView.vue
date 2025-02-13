@@ -7,7 +7,7 @@
                 <ItemInput v-model="searchQuery" @search="applySearch" />
             </div>
             <div>
-                <button class="btn btn-primary me-2">Add New</button>
+                <button class="btn btn-primary me-2" @click="openModal">Add New</button>
             </div>
         </div>
 
@@ -32,7 +32,7 @@
                         <td>{{ region.MFO }}</td>
                         <td>{{ region.state }}</td>
                         <td class="text-center">
-                            <button class="icon-btn edit-btn">
+                            <button class="icon-btn edit-btn" @click="editRegion(region)">
                                 <i class="fa fa-edit"></i>
                             </button>
                             <button class="icon-btn delete-btn" @click="deleteRegion(region.id)">
@@ -42,48 +42,68 @@
                     </tr>
                 </tbody>
             </table>
-            <nav v-if="totalPages > 1">
-                <ul class="pagination justify-content-end">
-                    <li class="page-item" :class="{ disabled: currentPage === 1 }">
-                        <button class="page-link" @click="prevPage">Previous</button>
-                    </li>
-                    <li v-for="page in totalPages" :key="page" 
-                        class="page-item" :class="{ active: currentPage === page }">
-                        <button class="page-link" @click="setPage(page)">{{ page }}</button>
-                    </li>
-                    <li class="page-item" :class="{ disabled: currentPage === totalPages }">
-                        <button class="page-link" @click="nextPage">Next</button>
-                    </li>
-                </ul>
-            </nav>
+        </div>
+        <div v-if="isModalOpen" class="modal-overlay">
+            <div class="modal-content">
+                <h3 class="text-center">{{ isEditing ? "Edit Branch" : "Add New Branch" }}</h3>
+
+                <div class="form-group">
+                    <label>Filial nomi</label>
+                    <input type="text" v-model="newBranch.city" class="form-control" placeholder="Filial nomini kiriting">
+                </div>
+
+                <div class="form-group">
+                    <label>MFO</label>
+                    <input type="text" v-model="newBranch.MFO" class="form-control" placeholder="MFO kiriting">
+                </div>
+
+                <div class="form-group">
+                    <label>Viloyat nomi</label>
+                    <select v-model="newBranch.state" class="form-control">
+                        <option value="" disabled selected>Viloyat tanlang</option>
+                        <option v-for="region in regionsList" :key="region" :value="region">
+                            {{ region }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-success" @click="saveBranch">{{ isEditing ? "Update" : "Save" }}</button>
+                    <button class="btn btn-danger" @click="closeModal">Cancel</button>
+                </div>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
 import ItemInput from '@/components/ui/ItemInput.vue';
+import { useBranchStore } from '@/store/index.js';
+import { mapState, mapActions } from 'pinia';
 
 export default {
     name: 'BranchView',
     components: { ItemInput },
     data() {
         return {
-            regions: [
-                { id: 1, city: "Toshkent OOBX", MFO: "15615", state: "Tashkent V" },
-                { id: 2, city: "Andijon OOBX", MFO: "15615", state: "Andijon" },
-                { id: 3, city: "Samarqand OOBX", MFO: "15615", state: "Samarqand" },
-                { id: 4, city: "Qashqadaryo OOBX", MFO: "15615", state: "Qashqadaryo" },
-                { id: 5, city: "Surxondaryo OOBX", MFO: "15615", state: "Surxondaryo" },
-                { id: 6, city: "Buxoro OOBX", MFO: "15615", state: "Buxoro" },
+            regionsList: [
+                "Toshkent", "Andijon", "Namangan", "Farg‘ona",
+                "Samarqand", "Buxoro", "Xorazm", "Qashqadaryo",
+                "Surxondaryo", "Jizzax", "Sirdaryo", "Navoiy"
             ],
             searchQuery: "",
             currentPage: 1,
-            itemsPerPage: 7
+            itemsPerPage: 7,
+            isModalOpen: false,
+            isEditing: false,
+            editingId: null,
+            newBranch: { city: "", MFO: "", state: "" }
         };
     },
     computed: {
+        ...mapState(useBranchStore, ['branches']),
         filteredRegions() {
-            return this.regions.filter(region =>
+            return this.branches.filter(region =>
                 region.city.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
                 region.MFO.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
                 region.state.toLowerCase().includes(this.searchQuery.toLowerCase())
@@ -98,34 +118,65 @@ export default {
         }
     },
     methods: {
-        nextPage() {
-            if (this.currentPage < this.totalPages) {
-                this.currentPage++;
+        ...mapActions(useBranchStore, ['addBranch', 'removeBranch']),
+        openModal() {
+            this.isModalOpen = true;
+            this.isEditing = false;
+            this.newBranch = { city: "", MFO: "", state: "" };
+        },
+        closeModal() {
+            this.isModalOpen = false;
+        },
+        saveBranch() {
+            if (this.newBranch.city && this.newBranch.MFO && this.newBranch.state) {
+                if (this.isEditing) {
+                    this.removeBranch(this.editingId);
+                    this.addBranch({ id: this.editingId, ...this.newBranch });
+                } else {
+                    this.addBranch(this.newBranch);
+                }
+                this.closeModal();
             }
         },
-        prevPage() {
-            if (this.currentPage > 1) {
-                this.currentPage--;
-            }
-        },
-        setPage(page) {
-            this.currentPage = page;
+        editRegion(region) {
+            this.newBranch = { ...region };
+            this.isEditing = true;
+            this.editingId = region.id;
+            this.isModalOpen = true;
         },
         deleteRegion(id) {
-            this.regions = this.regions.filter(region => region.id !== id);
+            this.removeBranch(id);
         },
         applySearch(query) {
             this.searchQuery = query;
-            this.currentPage = 1; 
+            this.currentPage = 1;
         }
     }
 };
 </script>
-
-<style>
-.branch-nav {
-    width: 90%;
-    margin: 0 auto;
+<style scoped>
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+}
+.modal-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
 }
 .icon-btn {
     background: none;

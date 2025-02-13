@@ -1,6 +1,6 @@
 const menuItems = [
-    { title: "Menus", icon: "bars", route: "/" },
-    { title: "Branch", icon: "line-chart", route: "/dashboard" },
+  { title: "Menus", icon: "line-chart", route: "/" },
+  { title: "Branch", icon: "bars", route: "/dashboard" },
     { title: "User", icon: "pencil", route: "/users" },
     { title: "Region", icon: "globe", route: "/regions" },
     // { title: "Widgets", icon: "cogs", route: "/widgets" },
