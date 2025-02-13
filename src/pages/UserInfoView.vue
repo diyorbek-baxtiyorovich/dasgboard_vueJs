@@ -111,7 +111,7 @@ export default {
         closeModal() { this.isModalOpen = false; this.isEditing = false; this.selectedUser = null; },
 
         addUser(newUser) {
-            this.users.push({ id: Date.now(), ...newUser });
+            this.users.push({ id: Date.now(), ...newUser }); 
             this.closeModal();
         },
         editUser(user) {
@@ -123,8 +123,12 @@ export default {
             const index = this.users.findIndex(u => u.id === updatedUser.id);
             if (index !== -1) this.users.splice(index, 1, updatedUser);
             this.closeModal();
+        },
+        applySearch(query) {
+            this.searchQuery = query;
         }
-    }
+    },
+    
 };
 </script>
 
