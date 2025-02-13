@@ -43,61 +43,35 @@
                 </tbody>
             </table>
         </div>
-        <div v-if="isModalOpen" class="modal-overlay">
-            <div class="modal-content">
-                <h3 class="text-center">{{ isEditing ? "Edit Branch" : "Add New Branch" }}</h3>
 
-                <div class="form-group">
-                    <label>Filial nomi</label>
-                    <input type="text" v-model="newBranch.city" class="form-control" placeholder="Filial nomini kiriting">
-                </div>
-
-                <div class="form-group">
-                    <label>MFO</label>
-                    <input type="text" v-model="newBranch.MFO" class="form-control" placeholder="MFO kiriting">
-                </div>
-
-                <div class="form-group">
-                    <label>Viloyat nomi</label>
-                    <select v-model="newBranch.state" class="form-control">
-                        <option value="" disabled selected>Viloyat tanlang</option>
-                        <option v-for="region in regionsList" :key="region" :value="region">
-                            {{ region }}
-                        </option>
-                    </select>
-                </div>
-
-                <div class="modal-footer">
-                    <button class="btn btn-success" @click="saveBranch">{{ isEditing ? "Update" : "Save" }}</button>
-                    <button class="btn btn-danger" @click="closeModal">Cancel</button>
-                </div>
-            </div>
-        </div>
+        <ItemModalBranch
+            :isModalOpen="isModalOpen"
+            :isEditing="isEditing"
+            :branch="newBranch"
+            @close="closeModal"
+            @submit="saveBranch"
+        />
     </div>
 </template>
 
 <script>
 import ItemInput from '@/components/ui/ItemInput.vue';
+import ItemModalBranch from '@/components/ui/ItemModalBranch.vue';
 import { useBranchStore } from '@/store/index.js';
 import { mapState, mapActions } from 'pinia';
 
 export default {
     name: 'BranchView',
-    components: { ItemInput },
+    components: { ItemInput, ItemModalBranch },
     data() {
         return {
-            regionsList: [
-                "Toshkent", "Andijon", "Namangan", "Farg‘ona",
-                "Samarqand", "Buxoro", "Xorazm", "Qashqadaryo",
-                "Surxondaryo", "Jizzax", "Sirdaryo", "Navoiy"
-            ],
             searchQuery: "",
             currentPage: 1,
             itemsPerPage: 7,
             isModalOpen: false,
             isEditing: false,
             editingId: null,
-            newBranch: { city: "", MFO: "", state: "" }
+            newBranch: { city: "", MFO: "", state: "" },
         };
     },
     computed: {
@@ -127,16 +101,14 @@ export default {
         closeModal() {
             this.isModalOpen = false;
         },
-        saveBranch() {
-            if (this.newBranch.city && this.newBranch.MFO && this.newBranch.state) {
-                if (this.isEditing) {
-                    this.removeBranch(this.editingId);
-                    this.addBranch({ id: this.editingId, ...this.newBranch });
-                } else {
-                    this.addBranch(this.newBranch);
-                }
-                this.closeModal();
+        saveBranch(branch) {
+            if (this.isEditing) {
+                this.removeBranch(this.editingId);
+                this.addBranch({ id: this.editingId, ...branch });
+            } else {
+                this.addBranch({ id: Date.now(), ...branch });
             }
+            this.closeModal();
         },
         editRegion(region) {
             this.newBranch = { ...region };
@@ -154,30 +126,9 @@ export default {
     }
 };
 </script>
+
 <style scoped>
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-}
-.modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    width: 400px;
-}
-.modal-footer {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 15px;
-}
+
 .icon-btn {
     background: none;
     border: none;

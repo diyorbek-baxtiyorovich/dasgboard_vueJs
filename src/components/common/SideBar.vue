@@ -9,7 +9,7 @@
     </div>
 </template>
 <script>
-import SideBarElements from '@/layout/components/SideBar.vue';
+import SideBarElements from '@/layout/components/ItemSideBar.vue';
 
 export default {
     components: {
