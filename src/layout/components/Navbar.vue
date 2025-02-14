@@ -5,9 +5,14 @@
         </div>
         <div class="nav-bar_profile">
             <ul class="d-flex">
-                <li v-if="username">{{ username }}</li>
+                <li v-if="username" class="d-flex align-items-center">
+                    <div class="avatar">
+                        <img class="avatar-img" src="@/assets/avatar.png" alt="user@email.com">
+                    </div>
+                    <span>{{ username }}</span>
+                </li>
                 <li @click="logout" class="logout-btn">Log out</li>
-            </ul>
+            </ul>       
         </div>
     </div>
 </template>
@@ -39,12 +44,27 @@ const logout = () => {
     list-style: none;
     display: flex;
     gap: 15px;
+    align-items: center;
 }
+
 .logout-btn {
     cursor: pointer;
     font-weight: bold;
 }
 .logout-btn:hover {
-    color: red;
+    color: #c0bfbf;
 }
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 10px;
+    cursor: pointer;
+}
+.avatar-img {
+    width: 100%;
+    height: 100%;
+}
+
 </style>

@@ -75,6 +75,16 @@ export default {
             regions: [
                 { id: 1, city: "Toshkent" },
                 { id: 2, city: "Andijon" },
+                { id: 3, city: "Namangan" },
+                { id: 4, city: "Farg‘ona" },
+                { id: 5, city: "Samarqand" },
+                { id: 6, city: "Buxoro" },
+                { id: 7, city: "Xorazm" },
+                { id: 8, city: "Qashqadaryo" },
+                { id: 9, city: "Surxondaryo" },
+                { id: 10, city: "Jizzax" },
+                { id: 11, city: "Sirdaryo" },
+                { id: 12, city: "Navoiy" }
             ],
             regionsList: [
                 "Toshkent", "Andijon", "Namangan", "Farg‘ona",
@@ -83,7 +93,7 @@ export default {
             ],
             newRegion: { city: "" },
             currentPage: 1,
-            itemsPerPage: 5,
+            itemsPerPage: 7,
             isEditing: false,
             editingId: null,
         };
@@ -148,7 +158,7 @@ export default {
 .reg-block {
     width: 100%;
     height: calc(100vh - 70px);
-    padding: 50px;
+    padding: 20px 50px;
 }
 .reg-box {
     width: 100%;
@@ -156,6 +166,10 @@ export default {
     border-radius: 20px;
     padding: 20px;
     box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+}
+.reg-box h1{
+    color: #3d4a52;
+    margin-bottom: 30px;
 }
 .icon-btn {
     background: none;

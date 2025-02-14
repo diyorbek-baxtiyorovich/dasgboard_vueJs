@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div class="logo">
-            <img src="../../assets/logo.jpg" alt="Dashport logo">
+        <div class="logo " >
+            <img src="https://assets.elements.envato.com/apps/storefront/EnvatoLogoLight-b794a434513b3b975d91.svg" alt="Dashport logo">
         </div>
         <div>
             <SideBarElements />
@@ -22,6 +22,9 @@ export default {
         width: 100%;
         height: 70px;
         text-align: center;
+        padding: 10px 0;
+        background-color: #3d4a52; ;
+        border-bottom: 1px solid #ccc;
     }
     .logo img{
         width: 70%;

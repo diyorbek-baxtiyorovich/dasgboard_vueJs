@@ -1,6 +1,6 @@
 <template>
     <div class="menu-view">
-        <h1 class="text-center">Filiallar Statistikasi</h1>
+        <h1 class="text-center mb-3 fw-bold">Filiallar Statistikasi</h1>
         <div class="grid-container">
             <div ref="pieChart" class="chart"></div>
             <div ref="barChart" class="chart"></div>
@@ -46,7 +46,6 @@ export default {
             const labels = data.map(item => item.name);
             const values = data.map(item => item.value);
 
-            // **Pie Chart**
             pieInstance = echarts.init(pieChart.value);
             pieInstance.setOption({
                 title: { text: 'Filiallar bo\'yicha taqsimot', left: 'center' },
@@ -54,7 +53,6 @@ export default {
                 series: [{ name: 'Filiallar', type: 'pie', radius: '50%', data }]
             });
 
-            // **Bar Chart**
             barInstance = echarts.init(barChart.value);
             barInstance.setOption({
                 title: { text: 'Filiallar soni (Bar Chart)', left: 'center' },
@@ -64,7 +62,7 @@ export default {
                 series: [{ name: 'Filiallar', type: 'bar', data: values }]
             });
 
-            // **Line Chart**
+            
             lineInstance = echarts.init(lineChart.value);
             lineInstance.setOption({
                 title: { text: 'Filiallar soni (Line Chart)', left: 'center' },
@@ -74,7 +72,7 @@ export default {
                 series: [{ name: 'Filiallar', type: 'line', data: values }]
             });
 
-            // **Radar Chart**
+            
             radarInstance = echarts.init(radarChart.value);
             radarInstance.setOption({
                 title: { text: 'Radar Diagramma', left: 'center' },
@@ -109,14 +107,20 @@ export default {
     width: 100%;
     height: calc(100vh - 70px);
 }
+.menu-view h1 {
+    color: #3d4a52;
+    margin:  0;
+}
 .grid-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
-    padding: 20px;
+    padding: 0 30px;
 }
 .chart {
     width: 100%;
-    height: 270px;
+    height: 250px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+    border-radius: 10px; ;
 }
 </style>

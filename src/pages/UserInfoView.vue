@@ -1,11 +1,13 @@
 <template>
     <div class="mein-block">
-        <h3>User Info</h3>
+        <h3 class="text-center mb-3 fw-bold">Foydalanuvchilar ma'lumotlari</h3>
         <div class="d-flex justify-content-between align-items-center py-1">
             <ItemButton @click="openModal" />
             <ItemInput v-model="searchQuery" @search="applySearch" />
         </div>
-
+        <div>
+            <ItemAdvertisement />
+        </div>
         <table class="table table-striped w-100">
             <thead>
                 <tr>
@@ -37,7 +39,12 @@
             </tbody>
         </table>
 
-        <nav v-if="totalPages > 1">
+        <nav v-if="totalPages > 1" class="d-flex justify-content-between align-items-center">
+            <ExportToExcel 
+                :tableData="filteredUsers"
+                :headers="exportHeaders"
+                fileName="Foydalanuvchilar.xlsx"
+            />
             <ul class="pagination justify-content-end">
                 <li class="page-item" :class="{ disabled: currentPage === 1 }">
                     <button class="page-link" @click="prevPage">Previous</button>
@@ -64,13 +71,15 @@
 </template>
 
 <script>
+import ExportToExcel from '@/components/ui/ItemExportToExcel.vue';
 import tableData from "@/data/TableData"; 
 import ItemButton from "@/components/ui/ItemButton.vue";
 import ItemInput from "@/components/ui/ItemInput.vue";
 import ItemModal from "@/components/ui/ItemModal.vue";
+import ItemAdvertisement from '@/components/ui/ItemAdvertisement.vue';
 
 export default {
-    components: { ItemButton, ItemInput, ItemModal },
+    components: {ExportToExcel, ItemButton, ItemInput, ItemModal, ItemAdvertisement, },
     data() {
         return {
             users: [...tableData], 
@@ -95,6 +104,13 @@ export default {
         paginatedUsers() {
             const start = (this.currentPage - 1) * this.itemsPerPage;
             return this.filteredUsers.slice(start, start + this.itemsPerPage);
+        },
+        exportHeaders() {
+            return [ 
+                { label: "Name", key: "name" },  
+                { label: "Number", key: "number" },  
+                { label: "Region", key: "region" }
+            ];
         }
     },
     methods: {
@@ -148,6 +164,12 @@ export default {
     height: 100%;
     padding: 20px;
 }
+
+.mein-block h3{
+    color: #3d4a52; ;
+}
+
+
 .icon-btn {
     background: none;
     border: none;

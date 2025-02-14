@@ -7,7 +7,12 @@
                 <ItemInput v-model="searchQuery" @search="applySearch" />
             </div>
             <div>
-                <button class="btn btn-primary me-2" @click="openModal">Add New</button>
+                <ExportToExcel 
+                    :tableData="filteredRegions"
+                    :headers="exportHeaders"
+                    fileName="Filiallar.xlsx"
+                />
+                <button class="btn btn-primary  m-2" @click="openModal">Add New</button>
             </div>
         </div>
 
@@ -69,6 +74,7 @@
 </template>
 
 <script>
+import ExportToExcel from '@/components/ui/ItemExportToExcel.vue';
 import ItemInput from '@/components/ui/ItemInput.vue';
 import ItemModalBranch from '@/components/ui/ItemModalBranch.vue';
 import { useBranchStore } from '@/store/index.js';
@@ -76,7 +82,7 @@ import { mapState, mapActions } from 'pinia';
 
 export default {
     name: 'BranchView',
-    components: { ItemInput, ItemModalBranch },
+    components: { ExportToExcel, ItemInput, ItemModalBranch },
     data() {
         return {
             searchQuery: "",
@@ -100,9 +106,18 @@ export default {
         totalPages() {
             return Math.max(1, Math.ceil(this.filteredRegions.length / this.itemsPerPage));
         },
+
         paginatedRegions() {
             const start = (this.currentPage - 1) * this.itemsPerPage;
             return this.filteredRegions.slice(start, start + this.itemsPerPage);
+        },
+
+        exportHeaders() {
+            return [ 
+                { label: "Filial Name", key: "city" },
+                { label: "MFO", key: "MFO" },
+                { label: "Viloyat nomi", key: "state" }
+            ]
         }
     },
     methods: {
