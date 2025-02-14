@@ -1,6 +1,6 @@
 <template>
     <div class="container py-3">
-        <h1 class="text-center mb-3 fw-bold">Branch</h1>
+        <h1 class="text-center mb-3 fw-bold">Filiallar</h1>
 
         <div class="branch-nav d-flex justify-content-between">
             <div>

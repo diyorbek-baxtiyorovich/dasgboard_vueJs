@@ -1,7 +1,7 @@
 <template>
     <div class="reg-block">
         <div class="reg-box">
-            <h1 class="text-center">Regions</h1>
+            <h1 class="text-center">Hududlar</h1>
 
             <main class="container">
                 <div class="row g-3">
