@@ -102,8 +102,10 @@ export default {
         prevPage() { if (this.currentPage > 1) this.currentPage--; },
         nextPage() { if (this.currentPage < this.totalPages) this.currentPage++; },
         deleteUser(id) {
-            if (confirm("Bu foydalanuvchini o'chirishni xohlaysizmi?")) {
+            if (confirm("Siz bu ma'lumotni o'chirmoqchimisiz keyin tiklab bo'lmaydi?")) {
                 this.users = this.users.filter(user => user.id !== id);
+            }else{
+                alert("Ma'lumot o'chirilmadi")
             }
         },
         openModal() { this.isModalOpen = true; this.isEditing = false; this.selectedUser = null; },
@@ -128,7 +130,11 @@ export default {
             this.searchQuery = query;
         }
     },
-    
+    watch: {
+        searchQuery() {
+            this.currentPage = 1; 
+        }
+    }
 };
 </script>
 
