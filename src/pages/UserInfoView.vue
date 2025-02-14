@@ -133,7 +133,11 @@ export default {
     watch: {
         searchQuery() {
             this.currentPage = 1; 
+        },
+        currentPage() {
+            if (this.currentPage > this.totalPages) this.currentPage = this.totalPages;
         }
+
     }
 };
 </script>

@@ -43,6 +43,20 @@
                 </tbody>
             </table>
         </div>
+        <nav v-if="totalPages > 1">
+            <ul class="pagination justify-content-end">
+                <li class="page-item" :class="{ disabled: currentPage === 1 }">
+                    <button class="page-link" @click="prevPage">Previous</button>
+                </li>
+                <li v-for="page in totalPages" :key="page" 
+                    class="page-item" :class="{ active: currentPage === page }">
+                    <button class="page-link" @click="setPage(page)">{{ page }}</button>
+                </li>
+                <li class="page-item" :class="{ disabled: currentPage === totalPages }">
+                    <button class="page-link" @click="nextPage">Next</button>
+                </li>
+            </ul>
+        </nav>
 
         <ItemModalBranch
             :isModalOpen="isModalOpen"
@@ -84,7 +98,7 @@ export default {
             );
         },
         totalPages() {
-            return Math.ceil(this.filteredRegions.length / this.itemsPerPage);
+            return Math.max(1, Math.ceil(this.filteredRegions.length / this.itemsPerPage));
         },
         paginatedRegions() {
             const start = (this.currentPage - 1) * this.itemsPerPage;
@@ -92,6 +106,21 @@ export default {
         }
     },
     methods: {
+        setPage(page) { 
+            if (page >= 1 && page <= this.totalPages) {
+                this.currentPage = page; 
+            }
+        },
+        prevPage() { 
+            if (this.currentPage > 1) {
+                this.currentPage--; 
+            }
+        },
+        nextPage() { 
+            if (this.currentPage < this.totalPages) {
+                this.currentPage++; 
+            }
+        },
         ...mapActions(useBranchStore, ['addBranch', 'removeBranch']),
         openModal() {
             this.isModalOpen = true;
@@ -103,8 +132,10 @@ export default {
         },
         saveBranch(branch) {
             if (this.isEditing) {
-                this.removeBranch(this.editingId);
-                this.addBranch({ id: this.editingId, ...branch });
+                const index = this.branches.findIndex(r => r.id === this.editingId);
+                if (index !== -1) {
+                    this.branches[index] = { ...branch, id: this.editingId };
+                }
             } else {
                 this.addBranch({ id: Date.now(), ...branch });
             }
@@ -123,7 +154,17 @@ export default {
             this.searchQuery = query;
             this.currentPage = 1;
         }
-    }
+    },
+    watch: {
+        searchQuery() {
+            this.currentPage = 1; 
+        },
+        currentPage() {
+            if (this.currentPage > this.totalPages) {
+                this.currentPage = this.totalPages;
+            }
+        }
+    },
 };
 </script>
 
