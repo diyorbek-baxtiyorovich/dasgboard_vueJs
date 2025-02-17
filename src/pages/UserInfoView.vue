@@ -5,9 +5,6 @@
             <ItemButton @click="openModal" />
             <ItemInput v-model="searchQuery" @search="applySearch" />
         </div>
-        <div>
-            <ItemAdvertisement />
-        </div>
         <table class="table table-striped w-100">
             <thead>
                 <tr>
@@ -76,10 +73,9 @@ import tableData from "@/data/TableData";
 import ItemButton from "@/components/ui/ItemButton.vue";
 import ItemInput from "@/components/ui/ItemInput.vue";
 import ItemModal from "@/components/ui/ItemModal.vue";
-import ItemAdvertisement from '@/components/ui/ItemAdvertisement.vue';
 
 export default {
-    components: {ExportToExcel, ItemButton, ItemInput, ItemModal, ItemAdvertisement, },
+    components: {ExportToExcel, ItemButton, ItemInput, ItemModal,  },
     data() {
         return {
             users: [...tableData], 
