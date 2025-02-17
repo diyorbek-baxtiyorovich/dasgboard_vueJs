@@ -3,14 +3,29 @@
         <div class="modal-item">
             <h1>{{ isEditing ? 'User Changes' : 'Add a Customer' }}</h1>
             <form @submit.prevent="submitForm">
+
                 <div class="mb-3">
                     <label>Name</label>
                     <input v-model="formData.name" type="text" class="form-control" required>
                 </div>
 
                 <div class="mb-3">
+                    <label>Country</label>
+                    <select v-model="selectedCountry" class="form-select" @change="updateDialCode">
+                        <option disabled value="">Select a country</option>
+                        <option v-for="country in countries" :key="country.code" :value="country">
+                            {{ country.name }} ({{ country.dial_code }})
+                        </option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
                     <label>Number</label>
-                    <input v-model="formData.number" type="text" class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" required>
+                    <div class="input-group">
+                        <span class="input-group-text">{{ formData.dial_code }}</span>
+                        <input v-model="formData.number" type="text" class="form-control"
+                               placeholder="Enter phone number" pattern="[0-9]{9}" required>
+                    </div>
                 </div>
 
                 <div class="mb-3">
@@ -31,21 +46,25 @@
 </template>
 
 <script>
+import CountryCodes from '@/Api/CountryCodes.json'; //json--
+
 export default {
     props: { isOpen: Boolean, user: Object, isEditing: Boolean },
     data() {
         return {
-            formData: { name: "", number: "", region: "" },
+            formData: { name: "", number: "", region: "", dial_code: "" },
+            selectedCountry: null, 
+            countries: CountryCodes, 
             regions: [
                 "Toshkent", "Andijon", "Samarqand", "Qashqadaryo", "Surxondaryo",
                 "Buxoro", "Navoiy", "Qoraqalpoqiston", "Sirdaryo", "Jizzax",
                 "Namangan", "Xorazm", "Farg'ona"
-            ],
+            ]
         };
     },
     watch: {
         user(newUser) {
-            this.formData = newUser ? { ...newUser } : { name: "", number: "", region: "" };
+            this.formData = newUser ? { ...newUser } : { name: "", number: "", region: "", dial_code: "" };
         }
     },
     methods: {
@@ -53,6 +72,11 @@ export default {
         submitForm() {
             this.$emit(this.isEditing ? "save-user" : "add-user", this.formData);
             this.closeModal();
+        },
+        updateDialCode() {
+            if (this.selectedCountry) {
+                this.formData.dial_code = this.selectedCountry.dial_code;
+            }
         }
     }
 };

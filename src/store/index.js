@@ -1,7 +1,9 @@
 import { defineStore } from 'pinia';
+import Json from '@/Api/CountryCodes.json';
 
 export const useBranchStore = defineStore('branchStore', {
     state: () => ({
+        countries: Json.name,
         branches: [
             { id: 1, city: "Toshkent OOBX", MFO: "15615", state: "Tashkent" },
             { id: 2, city: "Andijon OOBX", MFO: "15615", state: "Andijon" },
@@ -20,5 +22,8 @@ export const useBranchStore = defineStore('branchStore', {
         removeBranch(id) {
             this.branches = this.branches.filter(branch => branch.id !== id);
         }
-    }
+    },
+    mounted() {
+        console.log(this.countries);
+    },
 });
