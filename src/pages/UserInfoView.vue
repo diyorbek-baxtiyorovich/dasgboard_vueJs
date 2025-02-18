@@ -10,6 +10,7 @@
                 <tr>
                     <th>#</th>
                     <th>Name</th>
+                    <th>Filial Name</th>
                     <th>Number</th>
                     <th>Region</th>
                     <th class="text-center">Action</th>
@@ -17,11 +18,12 @@
             </thead>
             <tbody>
                 <tr v-if="paginatedUsers.length === 0">
-                    <td colspan="5" class="text-center">Hech qanday ma'lumot topilmadi</td>
+                    <td colspan="6" class="text-center">Hech qanday ma'lumot topilmadi</td>
                 </tr>
                 <tr v-for="(user, index) in paginatedUsers" :key="user.id">
                     <th>{{ (currentPage - 1) * itemsPerPage + index + 1 }}</th>
                     <td>{{ user.name }}</td>
+                    <td>{{ user.filial_name }}</td>
                     <td>{{ user.number }}</td>
                     <td>{{ user.region }}</td>
                     <td class="text-center">
@@ -62,6 +64,7 @@
             :isEditing="isEditing"
             @close="closeModal" 
             @save-user="saveUser"
+            :branch="newBranch"
             @add-user="addUser"
         />
     </div>
@@ -73,66 +76,95 @@ import tableData from "@/data/TableData";
 import ItemButton from "@/components/ui/ItemButton.vue";
 import ItemInput from "@/components/ui/ItemInput.vue";
 import ItemModal from "@/components/ui/ItemModal.vue";
+import { useBranchStore } from '@/store/index.js';
+import { mapState, mapActions } from 'pinia';
 
 export default {
-    components: {ExportToExcel, ItemButton, ItemInput, ItemModal,  },
+    components: {ExportToExcel, ItemButton, ItemInput, ItemModal },
+    
     data() {
         return {
-            users: [...tableData], 
+            users: [...tableData],
             searchQuery: "",
             currentPage: 1,
             itemsPerPage: 8,
             isModalOpen: false,
             selectedUser: null,
-            isEditing: false
+            isEditing: false,
+            newBranch: { MFO: "" },
         };
     },
+
     computed: {
+        ...mapState(useBranchStore, ['branches']),
+
         filteredUsers() {
             return this.users.filter(user =>
+                user.number.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
                 user.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                user.filial_name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
                 user.region.toLowerCase().includes(this.searchQuery.toLowerCase())
             );
         },
+
         totalPages() {
             return Math.ceil(this.filteredUsers.length / this.itemsPerPage);
         },
+
         paginatedUsers() {
             const start = (this.currentPage - 1) * this.itemsPerPage;
             return this.filteredUsers.slice(start, start + this.itemsPerPage);
         },
+
         exportHeaders() {
             return [ 
                 { label: "Name", key: "name" },  
+                { label: "Filial Name", key: "filial_name" },
                 { label: "Number", key: "number" },  
                 { label: "Region", key: "region" }
             ];
         }
     },
+
     methods: {
+        ...mapActions(useBranchStore, ['addBranch']),
+
         setPage(page) { this.currentPage = page; },
         prevPage() { if (this.currentPage > 1) this.currentPage--; },
         nextPage() { if (this.currentPage < this.totalPages) this.currentPage++; },
+
         deleteUser(id) {
-            if (confirm("Siz bu ma'lumotni o'chirmoqchimisiz keyin tiklab bo'lmaydi?")) {
+            if (confirm("Siz bu ma'lumotni o'chirmoqchimisiz?")) {
                 this.users = this.users.filter(user => user.id !== id);
-            }else{
-                alert("Ma'lumot o'chirilmadi")
+            } else {
+                alert("Ma'lumot o'chirilmadi");
             }
         },
-        openModal() { this.isModalOpen = true; this.isEditing = false; this.selectedUser = null; },
 
-        closeModal() { this.isModalOpen = false; this.isEditing = false; this.selectedUser = null; },
+        openModal() { 
+            this.isModalOpen = true; 
+            this.isEditing = false; 
+            this.selectedUser = null; 
+        },
+
+        closeModal() { 
+            this.isModalOpen = false; 
+            this.isEditing = false; 
+            this.selectedUser = null; 
+        },
 
         addUser(newUser) {
-            this.users.push({ id: Date.now(), ...newUser }); 
+            this.users.push({ id: Date.now(), ...newUser });
+            this.addBranch(newUser);
             this.closeModal();
         },
+
         editUser(user) {
             this.selectedUser = { ...user };
             this.isEditing = true;
             this.isModalOpen = true;
         },
+
         saveUser(updatedUser) {
             const index = this.users.findIndex(u => u.id === updatedUser.id);
             if (index !== -1) this.users.splice(index, 1, updatedUser);
@@ -142,6 +174,7 @@ export default {
             this.searchQuery = query;
         }
     },
+
     watch: {
         searchQuery() {
             this.currentPage = 1; 
