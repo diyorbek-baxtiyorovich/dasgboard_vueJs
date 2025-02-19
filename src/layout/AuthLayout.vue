@@ -1,17 +1,15 @@
 <template>
-    <div>
-        <AuthLogin/>
-    </div>
+  <div>
+    <AuthLogin />
+  </div>
 </template>
 <script>
-import AuthLogin from '../pages/Auth/AuthLogin.vue';
+import AuthLogin from "../pages/Auth/AuthLogin.vue";
 
 export default {
-    components: {
-        AuthLogin,
-    }
-}
+  components: {
+    AuthLogin,
+  },
+};
 </script>
-<style>
-    
-</style>
+<style></style>

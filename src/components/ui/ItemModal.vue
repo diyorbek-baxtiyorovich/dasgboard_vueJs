@@ -1,35 +1,34 @@
 <template>
   <div v-if="isOpen" class="modal-overlay">
     <div class="modal-content">
-        <h3 class="modal-title">{{ isEditing ? "Edit User" : "Add User" }}</h3>
+      <h3 class="modal-title">{{ isEditing ? "Edit User" : "Add User" }}</h3>
 
-        <div class="form-group">
-            <label>Name</label>
-            <input v-model="formData.name" type="text" class="form-control" />
-        </div>
-        <div class="form-group">
-            <label>Phone Number</label>
-            <input v-model="formData.number" type="text" class="form-control" />
-        </div>
-    
-        <div class="form-group">
-            <label>Region</label>
-            <select v-model="formData.region" class="form-control">
-            <option disabled value="">Select a region</option>
-            <option v-for="region in regions" :key="region">{{ region }}</option>
-            </select>
-        </div>
+      <div class="form-group">
+        <label>Name</label>
+        <input v-model="formData.name" type="text" class="form-control" />
+      </div>
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input v-model="formData.number" type="text" class="form-control" />
+      </div>
 
-        <div class="form-group">
-            <label>Filial Nomi</label>
-            <select v-model="formData.filial_name" class="form-control">
-            <option disabled value="">Filial Nomi</option>
-            <option v-for="branch in filteredBranches" :key="branch.id">
-                {{ branch.city }}
-            </option>
-            </select>
-        </div>
+      <div class="form-group">
+        <label>Region</label>
+        <select v-model="formData.region" class="form-control">
+          <option disabled value="">Select a region</option>
+          <option v-for="region in regions" :key="region">{{ region }}</option>
+        </select>
+      </div>
 
+      <div class="form-group">
+        <label>Filial Nomi</label>
+        <select v-model="formData.filial_name" class="form-control">
+          <option disabled value="">Filial Nomi</option>
+          <option v-for="branch in filteredBranches" :key="branch.id">
+            {{ branch.city }}
+          </option>
+        </select>
+      </div>
 
       <div class="modal-actions">
         <button @click="submitForm" class="btn btn-primary">
@@ -53,21 +52,40 @@ export default {
   },
   data() {
     return {
-      formData: { name: "", filial_name: "", number: "", region: "", dial_code: "" },
+      formData: {
+        name: "",
+        filial_name: "",
+        number: "",
+        region: "",
+        dial_code: "",
+      },
       selectedCountry: null,
-      regions: ["Toshkent", "Andijon", "Samarqand", "Qashqadaryo", "Surxondaryo", "Buxoro", "Navoiy", "Xorazm"],
+      regions: [
+        "Toshkent",
+        "Andijon",
+        "Samarqand",
+        "Qashqadaryo",
+        "Surxondaryo",
+        "Buxoro",
+        "Navoiy",
+        "Xorazm",
+      ],
     };
   },
   computed: {
     ...mapState(useBranchStore, ["branches", "countries"]),
 
     filteredBranches() {
-      return this.branches.filter((branch) => branch.state === this.formData.region);
+      return this.branches.filter(
+        (branch) => branch.state === this.formData.region,
+      );
     },
   },
   watch: {
     user(newUser) {
-      this.formData = newUser ? { ...newUser } : { name: "", filial_name: "", number: "", region: "", dial_code: "" };
+      this.formData = newUser
+        ? { ...newUser }
+        : { name: "", filial_name: "", number: "", region: "", dial_code: "" };
     },
   },
   methods: {
