@@ -5,7 +5,7 @@
     </div>
     <div class="w-100">
       <div>
-        <Navbar/>
+        <AppNavbar/>
       </div>
       <main class="main-block">
         <RouterView />
@@ -15,12 +15,12 @@
 </template>
 <script>
 
-import Navbar from '@/layout/components/Navbar.vue';
+import AppNavbar from '@/layout/components/AppNavbar.vue';
 import SideBar from '@/components/common/SideBar.vue';
 
 export default {
   components: {
-    Navbar,
+    AppNavbar,
     SideBar
   }
 }

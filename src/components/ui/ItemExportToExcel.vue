@@ -20,9 +20,6 @@ export default {
                 alert("Ma'lumotlar mavjud emas!"); 
                 return;
             }
-
-            const columns = this.headers.map(header => header.label);
-
             const data = this.tableData.map((row, index) => {
                 let formattedRow = { "#": index + 1 };
                 this.headers.forEach(header => {

@@ -1,16 +1,14 @@
 <template>
     <div>
-        <Login/>
+        <AuthLogin/>
     </div>
 </template>
 <script>
-import Login from '../pages/Auth/Login.vue';
-import Register from '../pages/Auth/Register.vue';
+import AuthLogin from '../pages/Auth/AuthLogin.vue';
 
 export default {
     components: {
-        Login,
-        Register
+        AuthLogin,
     }
 }
 </script>
